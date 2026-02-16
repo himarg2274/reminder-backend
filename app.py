@@ -151,12 +151,16 @@ def get_reminders(user_id):
     return jsonify(result), 200
 @app.route("/delete-reminder/<int:id>", methods=["DELETE"])
 def delete_reminder(id):
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM reminders WHERE id = %s", (id,))
-    conn.commit()
-    cursor.close()
+    reminder = Reminder.query.get(id)
 
-    return jsonify({"message": "Reminder deleted"}), 200
+    if not reminder:
+        return jsonify({"message": "Reminder not found"}), 404
+
+    db.session.delete(reminder)
+    db.session.commit()
+
+    return jsonify({"message": "Reminder deleted successfully"}), 200
+
 
 
 # ----------------------
