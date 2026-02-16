@@ -149,6 +149,15 @@ def get_reminders(user_id):
         })
 
     return jsonify(result), 200
+@app.route("/delete-reminder/<int:id>", methods=["DELETE"])
+def delete_reminder(id):
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM reminders WHERE id = %s", (id,))
+    conn.commit()
+    cursor.close()
+
+    return jsonify({"message": "Reminder deleted"}), 200
+
 
 # ----------------------
 # CREATE TABLES
